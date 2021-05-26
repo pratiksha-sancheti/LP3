@@ -1,4 +1,3 @@
-
 #include<iostream>
 
 using namespace std;
@@ -233,7 +232,6 @@ int* rounds(int pt[],int key[],int round_no,int flag)
 	/*cout<<"\n\nexpanded_right:\n";
 	for(int i=0;i<8;i++)
 		cout<<expanded_right[i];
-
 	*/
 	static int* key1;
 	if(flag==0)		//flag=0 is for encoding
@@ -248,11 +246,11 @@ int* rounds(int pt[],int key[],int round_no,int flag)
 			for(int i=0;i<8;i++)
 				round2_key[i]=key1[i];	
 		}
-		//cout<<"\n\nEncode Key of Round "<<round_no<<endl;
-		//for(int i=0;i<8;i++)
-		//{	
-		//	cout<<key1[i];
-		//}
+		/* cout<<"\n\nEncode Key of Round "<<round_no<<endl;
+		for(int i=0;i<8;i++)
+		{	
+			cout<<key1[i];
+		} */
 	}
 	else			//else flag=1 ie. for decoding
 	{
@@ -279,11 +277,11 @@ int* rounds(int pt[],int key[],int round_no,int flag)
 			}
 		}	
 		
-		//cout<<"\n\nDecode Key of Round "<<round_no<<endl;
-		//for(int i=0;i<8;i++)
-		//{	
-		//	cout<<key1[i];
-		//}
+		/* cout<<"\n\nDecode Key of Round "<<round_no<<endl;
+		for(int i=0;i<8;i++)
+		{	
+			cout<<key1[i];
+		} */
 	}
 	/*cout<<"\n\nExpanded right\n";
 	for(int i=0;i<8;i++)
@@ -344,11 +342,11 @@ int* rounds(int pt[],int key[],int round_no,int flag)
 	for(int i=0;i<4;i++)
 		cout<<s0s1[i];
 	*/
-	//cout<<"\n\nRound "<<round_no<<" Output:\n";
-	//for(int i=0;i<8;i++)
-//		cout<<new_plain_text[i]<<"\t";
-//	cout<<endl;
-
+	/* cout<<"\n\nRound "<<round_no<<" Output:\n";
+	for(int i=0;i<8;i++)
+		cout<<new_plain_text[i]<<"\t";
+	cout<<endl;
+*/
 	
 
 	if(round_no==1)
@@ -371,9 +369,9 @@ int* encode(int pt[],int* round_text,int key[])
 	round_text=rounds(pt,key,1,0);
 	inverse_initial_permutation(round_text);
 
-	cout<<"\n\n-------------FINAL CIPHER TEXT-------------\n";
+	/* cout<<"\n\n-------------FINAL CIPHER TEXT-------------\n";
 	for(int i=0;i<8;i++)
-		cout<<round_text[i];
+		cout<<round_text[i]; */
 
 	return round_text;
 }
@@ -383,55 +381,47 @@ void decode(int pt[], int* cipher_text,int key[])
 	int *new_ct=rounds(cipher_text,key,1,1);		//flag=1 for decoding
 	inverse_initial_permutation(new_ct);
 
-	int decimal = 0;
-	cout<<"\n\n-------------DECODED TEXT-------------\n";
+	//cout<<"\n\n-------------DECODED TEXT-------------\n";
+    int base=1;
+    int op=0;
+    for(int i=0;i<8;i++)
+    {
+        op = op + new_ct[i]*base;
+        base = base*2;
+    }
+    //cout<<op<<endl;
+    cout<<char(op);
+
 	for(int i=0;i<8;i++)
-	    decimal = decimal * 2 + new_ct[i];
-	char c = static_cast<char>(decimal);
-	cout<<c;
+		cout<<new_ct[i];
 }
 int main()
 {
-	int *round_text, *cipher_text, pt[8],key[10];
-	string s;
+	int key[10];
 	cout<<"\nEnter the plain text (8-bits) :";
-	cin>>s;
-	int n = s.length(); 
-	cout<<"\nEnter the key (10-bits) :";
-	int binaryNum[32]; 
+    char s;
+    cin>>s;
+    //getline(cin,s);
+    cout<<s;
+    cout<<"\nEnter the key (10-bits) :";
 	for(int i=0;i<10;i++)
 		cin>>key[i];
 
-  	for (int j = 0; j <= n; j++) 
-    { 
-        int val = int(s[j]); 
-        int i = 0; 
-    	while (val > 0) { 
-  
-        // storing remainder in binary array 
-        binaryNum[i] = val % 2; 
-        val = val / 2; 
-        i++; 
-    } 
-  
-    // printing binary array in reverse order 
-	int k=0;
-    for (int j = i - 1; j >= 0; j--) 
-	{
-        cout << binaryNum[j]; 
-		pt[k] = binaryNum[j];
-		k++;
-	}
-	//cout<<"\n-------------ENCRYPTION-------------\n";
-	cipher_text=encode(pt,round_text,key);		//Encryption
-	//cout<<"\n\n\n-------------DECRYPTION-------------\n";
-	decode(pt,cipher_text,key);					//Decryption
-    } 
+    {
+        int *round_text, *cipher_text, pt[8];
+        char temp = s;
+        //cout<<temp;
+        int pti = int(temp);
+        //cout<<pti<<endl;
+        for (int i = 0; i < 8; ++i) 
+        {
+            pt[i] = (pti >> i) & 1;
+        cout<<pt[i];
+        } 
+        cipher_text=encode(pt,round_text,key);
+	    decode(pt,cipher_text,key);	
 
-	
-	
-	//int pt[8]={0,1,1,1,0,0,1,0};
-	//int key[10]={1,0,1,0,0,0,0,0,1,0};
+    }
 	
 	
 	return 0;
